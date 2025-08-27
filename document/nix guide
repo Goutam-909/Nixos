@@ -1,0 +1,14 @@
+sudo nixos-rebuild switch
+for pkgs update go in .dotfiles run
+nix flake update
+system update
+sudo nixos-rebuild switch --flake .#hostname
+and
+home-manager switch --flake .
+homenager rollbaack ;-
+home-manager generations
+copy the path/activate
+
+
+for every script start with this
+#!/usr/bin/env bash
