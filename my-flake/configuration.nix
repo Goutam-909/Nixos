@@ -1,0 +1,288 @@
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ config, lib, pkgs, unstablePkgs, ... }:
+
+{
+  imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
+
+  # Bootloader.
+  #boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport=true;
+  boot.loader.grub.device = "nodev";
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.useOSProber = true;
+
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
+  time.timeZone = "Asia/Kolkata";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_IN";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_IN";
+    LC_IDENTIFICATION = "en_IN";
+    LC_MEASUREMENT = "en_IN";
+    LC_MONETARY = "en_IN";
+    LC_NAME = "en_IN";
+    LC_NUMERIC = "en_IN";
+    LC_PAPER = "en_IN";
+    LC_TELEPHONE = "en_IN";
+    LC_TIME = "en_IN";
+  };
+  
+  # Enable the X11 windowing system.
+  #  services.xserver = {
+  #      layout = "us";
+  #      xkbVariant = "";
+  #      enable = true;
+  #      displayManager.sddm = {
+  #          enable = true;
+  #          theme = "maya";
+  #          autoNumlock = true;
+  #      };
+  #  };
+  # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
+  services.xserver.enable = true;
+
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  #services.desktopManager.plasma6.enable = true;
+  programs.hyprland.enable = true;
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  # Enable CUPS to print documents.
+  #services.printing.enable = true;
+  # Environment variables
+  environment = {
+    variables = {
+    QT_QPA_PLATFORMTHEME = "qt5ct";
+    };
+  };
+  #hardware.enableRedistributableFirmware = true;
+
+  hardware.enableAllFirmware = true;
+  hardware.firmware = with pkgs; [
+    sof-firmware
+  ];
+  hardware = {
+    #    pulseaudio.enable = true;
+        bluetooth.enable = true;
+    };
+  #sound.enable = true;
+  # Enable sound with pipewire.
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    jack.enable = true;
+    wireplumber.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
+  fonts.fontDir.enable = true;
+  fonts.packages = with pkgs; [  
+        nerd-fonts.fira-code
+        nerd-fonts.jetbrains-mono
+        nerd-fonts.symbols-only
+  ];
+
+  # Enable touchpad support (enabled default in most desktopManager).
+   services.libinput.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.goutam = {
+    isNormalUser = true;
+    description = "Goutam";
+    extraGroups = [ "networkmanager" "wheel" "audio" "video"];
+    packages = with pkgs; [
+      kdePackages.kate
+    #  thunderbird
+    ];
+  };
+
+  # Install firefox.
+  programs.firefox.enable = true;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
+     pkgs.vscode
+     pkgs.kitty
+     pkgs.zsh
+     pkgs.file-roller
+     blueman
+     brightnessctl
+     pkgs.rofi-wayland
+     fzf
+     git
+     gtk3
+     hyprland
+     hypr
+     hyprlock
+     pywal
+     swww
+     pavucontrol
+     networkmanager
+     networkmanagerapplet
+     fastfetch
+     cava 
+     bluez
+     blueman
+     cliphist
+     polkit_gnome
+     xdg-desktop-portal-hyprland
+     imagemagick
+     kdePackages.ffmpegthumbs
+     libnotify
+     nwg-look 
+     qt5.qtwayland
+     qt6.qtwayland
+     hypridle
+     hyprshot
+     swaynotificationcenter
+     vlc
+     ffmpegthumbnailer
+     glib
+     kdePackages.dolphin
+     kdePackages.sddm
+     waybar
+     wireplumber
+     xdg-desktop-portal-gtk
+     xdg-utils
+     bibata-cursors
+     pipewire
+     alsa-utils
+     pulseaudio
+     starship
+     eza
+     btop
+     pkgs.kdePackages.kio
+     pkgs.kdePackages.kio-extras
+     kdePackages.polkit-kde-agent-1
+     wlogout
+     eog
+     jq
+     wl-clipboard
+     #thunar
+     xfce.thunar
+     xfce.tumbler
+     poppler_utils            # for PDF thumbnails
+     evince                   # PDF/image previews
+     epub-thumbnailer # ePub thumbnails
+     libgsf                   # office file thumbnails
+     shared-mime-info         # to detect mime types
+     xfce.thunar-volman
+     xfce.thunar-archive-plugin
+     gvfs
+     unstablePkgs.quickshell
+     libsForQt5.qt5.qtsvg
+     libsForQt5.qt5.qtimageformats
+     #kdePackages.qtsvg
+     #kdePackages.qtimageformats
+     #kdePackages.qt5compat
+     #kdePackages.qtdeclarative
+     #kdePackages.qtbase
+     #libsForQt5.qt5.qtquickcontrols
+     fish
+     adwaita-icon-theme       # GNOME icons, includes symbolic icons
+     kdePackages.breeze-icons             # KDE icons, also very complete
+     imagemagick
+     ddcutil
+     papirus-icon-theme
+     libsForQt5.qt5ct
+     kdePackages.qt6ct
+     material-symbols
+     nerd-fonts.caskaydia-cove
+     ibm-plex
+     kdePackages.qqc2-desktop-style
+  ];
+  
+
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+  services.dbus.enable = true;
+    xdg.portal = {
+        enable = true;
+        extraPortals = [ 
+        pkgs.xdg-desktop-portal-gtk
+        ];
+    }; 
+  # List services that you want to enable:
+
+  # Enable the OpenSSH daemon.
+  # services.openssh.enable = true;
+
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "25.05"; # Did you read the comment?
+  
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  #ZSH default
+  #environment.shells = with pkgs; [ zsh ];
+  #users.defaultUserShelll = pkgs.zsh;
+  #program.zsh.enable = true;
+  services.blueman.enable = true;
+
+  programs.zsh.enable = true;
+
+  users.users.goutam = {
+    # use your actual username
+    shell = pkgs.zsh;
+    # optional: home = "/home/goutam"; # if you're defining manually
+  };
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.hyprland.enableGnomeKeyring = true;
+  
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;                # Enables GVFS backend (network, trash, etc.)
+  services.udisks2.enable = true;
+}
